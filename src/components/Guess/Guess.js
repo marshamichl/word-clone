@@ -1,26 +1,28 @@
 import React from 'react';
-import { NUM_OF_GUESSES_ALLOWED, WORD_LENGTH_ALLOWED } from '../../constants';
+import { WORD_LENGTH_ALLOWED } from '../../constants';
 import { range } from '../../utils';
+import { checkGuess } from '../../game-helpers';
 
-function Guess({ guesses }) {
+function LetterCell({ letter, status }) {
+  const className = status ? `cell ${status}` : 'cell';
+  return <span className={className}>{letter}</span>;
+}
+
+function Guess({ guess, answer }) {
+  const result = checkGuess(guess, answer);
+
   return (
-    <div className="guess-results">
-      {range(NUM_OF_GUESSES_ALLOWED).map((rowIndex) => {
+    <p className="guess">
+      {range(WORD_LENGTH_ALLOWED).map((number) => {
         return (
-          <p key={rowIndex} className="guess">
-            {range(WORD_LENGTH_ALLOWED).map((columnIndex) => {
-              const word = guesses[rowIndex] ? guesses[rowIndex] : '';
-              const character = word ? [...word] : '';
-              return (
-                <span key={columnIndex} className="cell">
-                  {character[columnIndex]}
-                </span>
-              );
-            })}
-          </p>
+          <LetterCell
+            key={number}
+            letter={result ? result[number].letter : undefined}
+            status={result ? result[number].status : undefined}
+          />
         );
       })}
-    </div>
+    </p>
   );
 }
 
